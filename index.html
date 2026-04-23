@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Garmin Forerunner E-Portfolio</title>
+  <style>
+    :root{
+      --bg:#0b1417;
+      --panel:#101d21;
+      --panel-2:#13262b;
+      --card:#172c32;
+      --line:#27434a;
+      --text:#e9f6f6;
+      --muted:#a3c0c1;
+      --garmin:#00b4b3;
+      --garmin-2:#6de6dc;
+      --strava:#fc4c02;
+      --strava-soft:#ff9b70;
+      --white:#f7fcfc;
+      --shadow:0 20px 60px rgba(0,0,0,.28);
+      --radius:28px;
+      --max:1280px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(0,180,179,.12), transparent 22%),
+        radial-gradient(circle at 85% 0%, rgba(252,76,2,.10), transparent 18%),
+        linear-gradient(180deg, #081014 0%, #0b1417 50%, #0d171b 100%);
+      position:relative;
+      line-height:1.68;
+      overflow-x:hidden;
+    }
+    body:before{
+      content:""; position:fixed; inset:0; pointer-events:none; opacity:.20; z-index:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500' viewBox='0 0 500 500'%3E%3Cg fill='none' stroke='%236de6dc' stroke-opacity='0.20' stroke-width='1'%3E%3Cpath d='M40 300C120 250 140 240 230 260S380 340 460 290'/%3E%3Cpath d='M30 340C120 290 160 300 240 330S360 390 470 350'/%3E%3Cpath d='M50 250C140 200 170 190 260 210S380 290 450 240'/%3E%3Cpath d='M60 200C140 160 190 150 270 170S380 240 430 190'/%3E%3Cpath d='M80 150C150 120 210 110 290 130S380 190 410 150'/%3E%3C/g%3E%3C/svg%3E");
+      background-size:560px 560px;
+      mix-blend-mode:screen;
+    }
+    img{display:block; max-width:100%}
+    a{text-decoration:none; color:inherit}
+    .page{position:relative; z-index:1; width:min(calc(100% - 32px), var(--max)); margin:0 auto; padding:18px 0 54px}
+
+    .topnav{
+      position:sticky; top:14px; z-index:40; display:flex; align-items:center; justify-content:space-between; gap:18px;
+      padding:14px 18px; border:1px solid rgba(109,230,220,.12); border-radius:999px;
+      background:rgba(9,17,20,.72); backdrop-filter:blur(14px); box-shadow:0 10px 30px rgba(0,0,0,.18);
+    }
+    .brand{display:flex; align-items:center; gap:14px; min-width:0}
+    .mark{
+      width:46px; height:46px; border-radius:18px; position:relative; overflow:hidden;
+      background:linear-gradient(135deg, var(--garmin), #0a7f7f 64%, var(--strava));
+      box-shadow:0 10px 24px rgba(0,180,179,.26);
+    }
+    .mark:before,.mark:after{content:""; position:absolute; border-radius:999px; background:rgba(255,255,255,.9)}
+    .mark:before{width:28px; height:4px; left:9px; top:20px; transform:rotate(-28deg)}
+    .mark:after{width:10px; height:10px; right:9px; top:9px}
+    .brand small{display:block; font-size:.72rem; text-transform:uppercase; letter-spacing:.16em; color:var(--muted)}
+    .brand strong{display:block; font-size:1rem}
+    .links{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end}
+    .links a{padding:9px 12px; border-radius:999px; font-size:.84rem; color:var(--muted); border:1px solid transparent; transition:.2s ease}
+    .links a:hover,.links a.active{background:rgba(255,255,255,.04); color:var(--white); border-color:rgba(109,230,220,.16)}
+
+    .hero{
+      margin-top:18px; padding:32px; border-radius:40px; overflow:hidden; position:relative;
+      background:
+        radial-gradient(circle at 78% 22%, rgba(252,76,2,.18), transparent 18%),
+        linear-gradient(135deg, rgba(17,31,35,.98), rgba(11,20,23,.96) 50%, rgba(13,25,28,.98));
+      border:1px solid rgba(109,230,220,.10); box-shadow:var(--shadow);
+    }
+    .hero:before{
+      content:""; position:absolute; inset:0; pointer-events:none;
+      background:linear-gradient(90deg, rgba(0,180,179,.05), transparent 35%, transparent 65%, rgba(252,76,2,.05));
+    }
+    .hero-grid{display:grid; grid-template-columns:1.08fr .92fr; gap:24px; align-items:stretch}
+    .hero-copy{display:flex; flex-direction:column; justify-content:space-between; min-height:560px}
+    .status-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px}
+    .chip{display:inline-flex; align-items:center; gap:10px; padding:9px 13px; border-radius:999px; font-size:.75rem; text-transform:uppercase; letter-spacing:.14em; border:1px solid rgba(109,230,220,.16); background:rgba(255,255,255,.03); color:var(--muted)}
+    .chip span{width:8px; height:8px; border-radius:50%; background:var(--garmin)}
+    .chip.strava span{background:var(--strava)}
+    h1{margin:0; font-size:clamp(3rem, 6vw, 5.8rem); line-height:.9; letter-spacing:-.06em; max-width:8.2ch}
+    .intro{max-width:62ch; color:#d7ebeb; margin-top:18px}
+    .metric-strip{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:24px}
+    .metric{padding:16px; border-radius:22px; background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03)); border:1px solid rgba(109,230,220,.10)}
+    .metric strong{display:block; font-size:1.55rem; letter-spacing:-.04em}
+    .metric span{display:block; color:var(--muted); font-size:.86rem; margin-top:4px}
+    .hero-notes{display:grid; grid-template-columns:1fr; gap:12px; margin-top:22px}
+    .hero-note{padding:16px 18px; border-radius:20px; background:rgba(255,255,255,.03); border-left:4px solid var(--garmin); color:var(--muted)}
+    .hero-note strong{color:var(--white)}
+
+    .hero-media{display:grid; grid-template-columns:1fr 1fr; grid-template-rows:250px 280px; gap:16px}
+    .hero-card{position:relative; overflow:hidden; border-radius:28px; border:1px solid rgba(109,230,220,.12); background:var(--panel-2)}
+    .hero-card img{width:100%; height:100%; object-fit:cover}
+    .hero-card.tall{grid-row:1 / span 2}
+    .hero-card .tag{position:absolute; left:14px; bottom:14px; padding:9px 12px; border-radius:999px; font-size:.76rem; background:rgba(7,13,15,.72); border:1px solid rgba(255,255,255,.10)}
+
+    .section{margin-top:24px; padding:28px; border-radius:34px; background:linear-gradient(180deg, rgba(16,29,33,.95), rgba(15,27,31,.98)); border:1px solid rgba(109,230,220,.10); box-shadow:var(--shadow); position:relative; overflow:hidden}
+    .section:before{content:""; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, var(--garmin), transparent 55%)}
+    .section.strava:before{background:linear-gradient(90deg, var(--strava), transparent 55%)}
+    .section-head{display:grid; grid-template-columns:110px minmax(0,1fr) 240px; gap:18px; align-items:end; margin-bottom:18px}
+    .sec-num{width:110px; height:110px; border-radius:30px; display:grid; place-items:center; font-size:2.4rem; font-weight:800; letter-spacing:-.05em; color:var(--white); background:linear-gradient(145deg, rgba(0,180,179,.95), rgba(11,103,103,.9)); box-shadow:0 18px 30px rgba(0,180,179,.18)}
+    .strava .sec-num{background:linear-gradient(145deg, rgba(252,76,2,.98), rgba(190,58,0,.92)); box-shadow:0 18px 30px rgba(252,76,2,.18)}
+    .sec-kicker{font-size:.74rem; text-transform:uppercase; letter-spacing:.18em; color:var(--muted); margin-bottom:8px}
+    .section h2{margin:0; font-size:clamp(1.8rem, 2.8vw, 3rem); line-height:1.02; letter-spacing:-.04em}
+    .section-sub{color:var(--muted); max-width:70ch; margin-top:8px}
+    .signal{justify-self:end; align-self:start; width:100%; max-width:240px; padding:16px 18px; border-radius:22px; background:rgba(255,255,255,.03); border:1px solid rgba(109,230,220,.10)}
+    .signal strong{display:block; font-size:.78rem; text-transform:uppercase; letter-spacing:.16em; color:var(--muted); margin-bottom:10px}
+    .signal .line{height:8px; border-radius:999px; background:rgba(255,255,255,.06); overflow:hidden}
+    .signal .line span{display:block; height:100%; width:78%; background:linear-gradient(90deg, var(--garmin), var(--garmin-2)); border-radius:999px}
+    .strava .signal .line span{background:linear-gradient(90deg, var(--strava), var(--strava-soft)); width:82%}
+    .copy p{margin:0 0 14px; color:#d8ecec; text-align:justify}
+    .copy h3{margin:18px 0 8px; font-size:1.02rem}
+
+    .split{display:grid; grid-template-columns:1.1fr .9fr; gap:18px}
+    .stack{display:grid; gap:16px}
+    .capture{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid rgba(109,230,220,.10); border-radius:24px; overflow:hidden; position:relative}
+    .capture.orange{border-color:rgba(252,76,2,.18)}
+    .capture:before{content:""; position:absolute; top:0; right:0; width:110px; height:110px; background:linear-gradient(135deg, rgba(0,180,179,.18), transparent 65%)}
+    .capture.orange:before{background:linear-gradient(135deg, rgba(252,76,2,.18), transparent 65%)}
+    .capture .frame{padding:16px 16px 8px}
+    .capture img{width:100%; border-radius:18px; background:#0c1518}
+    .capture .cap{padding:0 16px 16px; font-size:.92rem; color:var(--muted)}
+    .capture .cap strong{display:block; color:var(--white); margin-bottom:4px}
+
+    .mini-grid{display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:16px; margin-top:18px}
+    .mini-grid .capture{grid-column:span 6}
+    .mini-grid .capture.wide{grid-column:span 12}
+    .mini-grid .capture.span4{grid-column:span 4}
+    .mini-grid .capture.span8{grid-column:span 8}
+
+    .journey{display:grid; gap:12px; margin-top:18px}
+    .leg{display:grid; grid-template-columns:74px minmax(0,1fr); gap:14px; padding:14px; border-radius:20px; background:rgba(255,255,255,.03); border:1px solid rgba(109,230,220,.08)}
+    .leg-num{width:74px; min-height:74px; border-radius:18px; display:grid; place-items:center; font-weight:800; font-size:1.2rem; background:rgba(0,180,179,.12); color:var(--garmin-2)}
+    .leg h4{margin:0 0 4px; font-size:1rem}
+    .leg p{margin:0; color:var(--muted); text-align:left}
+
+    .score-grid{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; margin-top:18px}
+    .score{padding:16px; border-radius:22px; background:rgba(255,255,255,.03); border:1px solid rgba(109,230,220,.10)}
+    .score strong{display:block; font-size:1.58rem; color:var(--white)}
+    .score span{display:block; font-size:.86rem; color:var(--muted); margin-top:4px}
+
+    .table-wrap{margin-top:18px; overflow:auto; border-radius:24px; border:1px solid rgba(109,230,220,.10); background:rgba(255,255,255,.025)}
+    table{width:100%; min-width:720px; border-collapse:collapse}
+    th,td{padding:14px 16px; border-bottom:1px solid rgba(109,230,220,.08); text-align:left; vertical-align:top}
+    th{background:rgba(0,180,179,.08); color:#dff8f8; font-size:.8rem; letter-spacing:.12em; text-transform:uppercase}
+    tbody tr:last-child td{border-bottom:none}
+
+    .quote{margin-top:18px; padding:18px 20px; border-left:4px solid var(--strava); background:rgba(252,76,2,.08); border-radius:0 18px 18px 0; color:#ffd5c6}
+
+    .refs{columns:2; column-gap:24px; margin-top:18px}
+    .refs p{break-inside:avoid; margin:0 0 12px; color:#c6dddd}
+    .footer{padding:16px 0 32px; text-align:center; color:var(--muted); font-size:.88rem}
+
+    @media (max-width:1100px){
+      .hero-grid,.split{grid-template-columns:1fr}
+      .hero-copy{min-height:auto}
+      .metric-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .section-head{grid-template-columns:90px 1fr}
+      .signal{grid-column:1/-1; justify-self:start; max-width:none}
+      .score-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+    @media (max-width:760px){
+      .page{width:min(calc(100% - 20px), var(--max))}
+      .topnav{border-radius:24px; padding:12px 14px; align-items:flex-start; flex-direction:column}
+      .links{justify-content:flex-start}
+      .hero{padding:22px; border-radius:30px}
+      .hero-media{grid-template-columns:1fr; grid-template-rows:220px 180px 180px}
+      .hero-card.tall{grid-row:auto}
+      h1{max-width:none}
+      .metric-strip,.score-grid{grid-template-columns:1fr}
+      .section{padding:22px 18px; border-radius:26px}
+      .section-head{grid-template-columns:70px 1fr; gap:14px}
+      .sec-num{width:70px; height:70px; border-radius:18px; font-size:1.5rem}
+      .mini-grid{grid-template-columns:1fr}
+      .mini-grid .capture,.mini-grid .capture.wide,.mini-grid .capture.span4,.mini-grid .capture.span8{grid-column:span 1}
+      .refs{columns:1}
+      .copy p{text-align:left}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topnav">
+      <div class="brand">
+        <div class="mark"></div>
+        <div>
+          <small>Digital Marketing · Garmin x Strava</small>
+          <strong>Forerunner E-Portfolio</strong>
+        </div>
+      </div>
+      <nav class="links">
+        <a href="#intro">Intro</a>
+        <a href="#engagement">Engagement</a>
+        <a href="#social">Strava</a>
+        <a href="#website">Website</a>
+        <a href="#trend">Trend</a>
+        <a href="#conclusion">Conclusion</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div>
+            <div class="status-row">
+              <div class="chip"><span></span> Garmin performance ecosystem</div>
+              <div class="chip strava"><span></span> Strava social layer</div>
+            </div>
+            <h1>How Garmin keeps users moving, tracking and returning.</h1>
+            <p class="intro">This version keeps the original Garmin content and image set, but gives the page a more distinctive visual identity: less like a standard assignment website and more like a performance console built around Garmin’s data-driven ecosystem and Strava’s social energy.</p>
+            <div class="metric-strip">
+              <div class="metric"><strong>4</strong><span>Main digital marketing areas</span></div>
+              <div class="metric"><strong>16</strong><span>Figures and visuals retained</span></div>
+              <div class="metric"><strong>2</strong><span>Brand colours driving the interface</span></div>
+              <div class="metric"><strong>1</strong><span>Connected wearable ecosystem</span></div>
+            </div>
+          </div>
+          <div class="hero-notes">
+            <div class="hero-note"><strong>Garmin influence:</strong> teal-driven, precise, technical, performance-focused.</div>
+            <div class="hero-note" style="border-left-color:var(--strava)"><strong>Strava influence:</strong> warmer orange accents in the social section to highlight competition, challenge and community.</div>
+          </div>
+        </div>
+        <div class="hero-media">
+          <figure class="hero-card tall"><img src="src/garmin-forerunner-series.png" alt="Garmin Forerunner series"><div class="tag">Forerunner series</div></figure>
+          <figure class="hero-card"><img src="src/garmin-brand-overview.png" alt="Garmin brand overview"><div class="tag">Brand overview</div></figure>
+          <figure class="hero-card"><img src="src/garmin-homepage-alt.png" alt="Garmin homepage"><div class="tag">Website visual</div></figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="intro">
+      <div class="section-head">
+        <div class="sec-num">01</div>
+        <div>
+          <div class="sec-kicker">Starting point</div>
+          <h2>Introduction</h2>
+          <p class="section-sub">Garmin is introduced here not only as a GPS brand, but as a connected performance ecosystem built around devices, apps, data and ongoing interaction.</p>
+        </div>
+        <div class="signal"><strong>Route signal</strong><div class="line"><span></span></div></div>
+      </div>
+      <div class="split">
+        <div class="copy">
+          <p>This e-portfolio applies digital marketing concepts to analyse Garmin as a real brand in the wearable technology market. Garmin is best known for GPS products, but it has also become a strong brand in sports and fitness technology, especially through its Forerunner series. The brand is popular with runners, cyclists and other active users because it offers more than just a smartwatch. Garmin also creates value through fitness data, mobile apps and a connected digital ecosystem.</p>
+          <p>This portfolio focuses on four main areas of Garmin’s digital marketing. First, it uses the Ladder of Engagement to explain how Garmin moves users from simple interaction to deeper participation. Second, it evaluates Strava as a platform that is closely linked to Garmin users. Third, it assesses Garmin’s website through a website checklist. Finally, it discusses a digital trend that is highly relevant to Garmin today. Overall, the portfolio shows how digital marketing ideas can be applied to a real brand in a practical way.</p>
+        </div>
+        <div class="stack">
+          <figure class="capture"><div class="frame"><img src="src/garmin-brand-overview.png" alt="Garmin Brand Overview"></div><div class="cap"><strong>Figure 1: Garmin Brand Overview</strong>Source: screenshot from Garmin website / source material.</div></figure>
+          <figure class="capture"><div class="frame"><img src="src/garmin-forerunner-series.png" alt="Garmin Forerunner Series"></div><div class="cap"><strong>Figure 2: Garmin Forerunner Series</strong>Source: screenshot from Garmin website / source material.</div></figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="engagement">
+      <div class="section-head">
+        <div class="sec-num">02</div>
+        <div>
+          <div class="sec-kicker">Interaction depth</div>
+          <h2>Ladder of Engagement</h2>
+          <p class="section-sub">This section explains how Garmin moves users from simple viewing and reviewing into stronger participation through Garmin Connect, product feedback and co-creation.</p>
+        </div>
+        <div class="signal"><strong>Engagement depth</strong><div class="line"><span style="width:84%"></span></div></div>
+      </div>
+      <div class="copy">
+        <p>The Ladder of Engagement shows that customers do not all interact with a brand in the same way. Some people only look at content, while others leave reviews, join discussions, share experiences or even help create value for the brand. This model is useful because it shows that engagement can develop from simple reactions into deeper participation, which is usually more valuable for a company over time (Smith and Zook, 2016).</p>
+      </div>
+      <div class="mini-grid">
+        <figure class="capture span8"><div class="frame"><img src="src/ladder-model.png" alt="Ladder of Engagement Model"></div><div class="cap"><strong>Figure 3: Ladder of Engagement Model</strong>Source: adapted framework included in the source material.</div></figure>
+        <figure class="capture span4"><div class="frame"><img src="src/garmin-user-experience.png" alt="Garmin User Experience"></div><div class="cap"><strong>Figure 4: Garmin User Experience</strong>Source: screenshot from Garmin website / source material.</div></figure>
+      </div>
+      <div class="journey">
+        <div class="leg"><div class="leg-num">1</div><div><h4>Reviews and evaluation</h4><p>Garmin is a good example of this model because it creates engagement at several different levels. At the lower level, users can leave ratings and reviews on Garmin products. This is important because reviews help other buyers compare devices and feel more confident before purchase. In a product category like sports watches, where people often compare features very carefully, this type of feedback matters a lot.</p></div></div>
+        <div class="leg"><div class="leg-num">2</div><div><h4>Discussion and repeat interaction</h4><p>At the discussion level, Garmin creates stronger interaction through Garmin Connect. Users can upload workouts, view performance data, compare activities and join fitness challenges. This means the relationship with Garmin does not stop after the product is bought. Instead, users keep coming back to the app and continue interacting with the brand through their daily fitness habits.</p></div></div>
+        <div class="leg"><div class="leg-num">3</div><div><h4>Ideas and product feedback</h4><p>Garmin also benefits from the ideas level because users often discuss what they want to see in future products, such as new health features, better design or more detailed training tools. This kind of feedback is useful because it gives the brand a clearer understanding of customer needs.</p></div></div>
+        <div class="leg"><div class="leg-num">4</div><div><h4>Co-creation</h4><p>At the highest level, Garmin moves towards co-creation through Connect IQ. This platform allows developers and advanced users to create watch faces, widgets and data fields for Garmin devices. In this case, users are not only consuming the product, but also adding value to the wider Garmin ecosystem. This is a stronger form of engagement because the user becomes part of the brand experience itself.</p></div></div>
+      </div>
+      <div class="mini-grid">
+        <figure class="capture span8"><div class="frame"><img src="src/garmin-connect-apps.png" alt="Garmin Connect Activity Feed and Metrics"></div><div class="cap"><strong>Figure 5: Garmin Connect Activity Feed and Metrics</strong>Source: screenshot from Garmin Connect / source material.</div></figure>
+        <figure class="capture span4"><div class="frame"><img src="src/garmin-mobile-ecosystem.png" alt="Garmin Mobile Ecosystem"></div><div class="cap"><strong>Figure 6: Garmin Mobile Ecosystem</strong>Source: screenshot from Garmin website / source material.</div></figure>
+      </div>
+      <div class="quote">Overall, Garmin performs strongly across the Ladder of Engagement because it combines product use, community interaction and customisation. However, the deeper levels of engagement still depend more on highly involved users rather than the average customer.</div>
+    </section>
+
+    <section class="section strava" id="social">
+      <div class="section-head">
+        <div class="sec-num">03</div>
+        <div>
+          <div class="sec-kicker">Social layer</div>
+          <h2>Evaluation of a Social Media Platform</h2>
+          <p class="section-sub">Strava gets its own warmer visual tone here so the page reflects the contrast between Garmin’s technical ecosystem and Strava’s social, competitive energy.</p>
+        </div>
+        <div class="signal"><strong>Social momentum</strong><div class="line"><span></span></div></div>
+      </div>
+      <div class="split">
+        <div class="copy">
+          <h3>3.1 Introduction to a Social Media Platform</h3>
+          <p>The selected platform for this section is Strava. Strava is highly relevant to Garmin because many Garmin users connect their devices to it in order to upload workouts, track progress and interact with other athletes. Unlike more general social media platforms, Strava is built around fitness activity, so it matches Garmin’s target audience very well.</p>
+          <p>From a marketing point of view, Strava is useful because it turns exercise into visible and shareable content. When users post a run, a ride or a training result, they are also sharing a lifestyle linked to performance and self-improvement. This makes Strava important for Garmin, because it supports both interaction and visibility in a natural way.</p>
+        </div>
+        <div class="stack">
+          <figure class="capture orange"><div class="frame"><img src="src/strava-platform-overview.png" alt="Strava Platform Overview"></div><div class="cap"><strong>Figure 7: Strava Platform Overview</strong>Source: screenshot from Strava / source material.</div></figure>
+          <figure class="capture orange"><div class="frame"><img src="src/four-zones-framework.png" alt="Four Zones of Social Media Framework"></div><div class="cap"><strong>Figure 8: Four Zones of Social Media Framework</strong>Source: adapted from the framework included in the source material.</div></figure>
+        </div>
+      </div>
+      <div class="copy">
+        <h3>3.2 Evaluation of Strava using the Four Zones of Social Media Framework</h3>
+        <p>A useful way to evaluate Strava is through the Four Zones of Social Media framework, which includes social community, social publishing, social entertainment and social commerce (Tuten and Solomon, 2017).</p>
+        <p>First, Strava works strongly as a social community platform. Users can follow one another, join clubs, comment on activities and give kudos. These features make the platform feel social rather than just technical. For Garmin, this is valuable because the brand becomes connected to a wider community of active users, not only to the device itself.</p>
+        <p>Second, Strava is also effective in social publishing. Garmin users can upload route maps, performance summaries and workout results directly from their devices. This means that a normal fitness activity can become shareable content. In many cases, users also repost this content on other platforms, which increases visibility even more.</p>
+      </div>
+      <div class="mini-grid">
+        <figure class="capture orange span6"><div class="frame"><img src="src/strava-share-story.png" alt="Activity Sharing and Interaction on Strava"></div><div class="cap"><strong>Figure 9: Activity Sharing and Interaction on Strava</strong>Source: screenshot from Strava / source material.</div></figure>
+        <figure class="capture orange span6"><div class="frame"><img src="src/strava-leaderboards.png" alt="Strava Challenges, Segments or Leaderboards"></div><div class="cap"><strong>Figure 10: Strava Challenges, Segments or Leaderboards</strong>Source: screenshot from Strava / source material.</div></figure>
+      </div>
+      <div class="copy">
+        <p>Third, Strava has a clear social entertainment role. Features such as leaderboards, challenges and segments make the app more competitive and motivating. This is important because it encourages repeat usage and keeps users engaged for longer. Garmin benefits from this because its devices often provide the data that powers these features.</p>
+        <p>Finally, Strava has some social commerce value, although this is the weakest area. The platform is not mainly used for direct shopping, but branded challenges and partnerships can still influence purchase behaviour. For Garmin, the value here is more indirect, because stronger engagement on Strava can increase interest in more advanced devices and accessories.</p>
+        <p>Overall, Strava is an effective platform for Garmin because it supports community, content sharing and motivation. Its strongest value is not direct selling, but the way it helps create a digital fitness culture that fits Garmin’s brand very well.</p>
+      </div>
+    </section>
+
+    <section class="section" id="website">
+      <div class="section-head">
+        <div class="sec-num">04</div>
+        <div>
+          <div class="sec-kicker">Digital touchpoint</div>
+          <h2>Website Checklist</h2>
+          <p class="section-sub">This section is styled more like a compact performance dashboard, which fits Garmin’s product category and helps the evaluation feel more structured.</p>
+        </div>
+        <div class="signal"><strong>Usability score</strong><div class="line"><span style="width:90%"></span></div></div>
+      </div>
+      <div class="copy">
+        <p>Websites are still an important part of digital marketing because they help users find information, compare products and make decisions. This is especially important for Garmin because its products are technical and usually require careful comparison before purchase (Chaffey and Ellis-Chadwick, 2019).</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Criterion</th><th>What it supports</th></tr></thead>
+          <tbody>
+            <tr><td>Navigation</td><td>Helps users move through product categories such as running, cycling, outdoor and health.</td></tr>
+            <tr><td>Product information</td><td>Supports comparison through specifications, visuals, feature explanations and compatibility details.</td></tr>
+            <tr><td>Mobile design</td><td>Keeps browsing and comparison accessible on smaller screens.</td></tr>
+            <tr><td>Trust and support</td><td>Reassures users through help pages, FAQs, support details and warranty information.</td></tr>
+            <tr><td>Performance</td><td>Affects how smooth and manageable the experience feels when pages are content-heavy.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="copy" style="margin-top:16px">
+        <p>Garmin performs strongly in navigation because the website separates products clearly into categories such as running, cycling, outdoor and health. This makes it easier for users to browse and find a suitable device. The comparison tools are also useful because many Garmin watches appear similar at first, but actually differ in features and price. However, the website can still feel slightly crowded because Garmin offers many product lines.</p>
+      </div>
+      <div class="mini-grid">
+        <figure class="capture span4"><div class="frame"><img src="src/garmin-mobile-interface.png" alt="Garmin.com Mobile Interface"></div><div class="cap"><strong>Figure 11: Garmin.com Mobile Interface</strong>Source: screenshot from Garmin website / source material.</div></figure>
+        <figure class="capture span8"><div class="frame"><img src="src/garmin-product-comparison.png" alt="Garmin.com Product Comparison Tool"></div><div class="cap"><strong>Figure 12: Garmin.com Product Comparison Tool</strong>Source: screenshot from Garmin website / source material.</div></figure>
+      </div>
+      <div class="copy">
+        <p>Content presentation is one of Garmin’s strongest areas. Product pages include detailed specifications, feature explanations, visuals and compatibility details. This is important because smartwatches are high-involvement products, so users often want clear information before purchase. The website does a good job of reducing uncertainty and helping users compare models.</p>
+        <p>Garmin also performs well in trust and support. The help centre, FAQs and warranty information help reassure users, especially because a smartwatch is a relatively expensive product. In addition, the site works well on mobile devices, which is important because many users research products on their phones before buying.</p>
+      </div>
+      <div class="mini-grid">
+        <figure class="capture span6"><div class="frame"><img src="src/garmin-support-banner.png" alt="Garmin Support or Help Centre"></div><div class="cap"><strong>Figure 13: Garmin Support or Help Centre</strong>Source: screenshot from Garmin website / source material.</div></figure>
+        <figure class="capture span6"><div class="frame"><img src="src/garmin-homepage-alt.png" alt="Garmin Homepage Alternative"></div><div class="cap"><strong>Additional website view</strong>Homepage view used to support the website evaluation section.</div></figure>
+      </div>
+      <div class="score-grid">
+        <div class="score"><strong>4.5 / 5</strong><span>Navigation</span></div>
+        <div class="score"><strong>5 / 5</strong><span>Product information</span></div>
+        <div class="score"><strong>4.5 / 5</strong><span>Mobile design</span></div>
+        <div class="score"><strong>4.5 / 5</strong><span>Trust and support</span></div>
+        <div class="score"><strong>4 / 5</strong><span>Performance</span></div>
+      </div>
+      <div class="mini-grid">
+        <figure class="capture wide"><div class="frame"><img src="src/garmin-product-comparison.png" alt="Website comparison interface"></div><div class="cap"><strong>Figure 14: Overall Website View</strong>Source: visual evidence used in the website checklist section.</div></figure>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Category</th><th>Score</th></tr></thead>
+          <tbody>
+            <tr><td>Navigation</td><td>4.5/5</td></tr>
+            <tr><td>Product information</td><td>5/5</td></tr>
+            <tr><td>Mobile design</td><td>4.5/5</td></tr>
+            <tr><td>Trust and support</td><td>4.5/5</td></tr>
+            <tr><td>Performance</td><td>4/5</td></tr>
+            <tr><td><strong>Overall score</strong></td><td><strong>4.5/5</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="copy" style="margin-top:16px">
+        <p>Overall, Garmin’s website presents a strong and professional experience. The main weakness is that pages with rich visuals and detailed product content can feel slightly slower or more complex than simpler websites. Even so, the website performs well across the main criteria.</p>
+        <p>Overall, Garmin’s website performs very well as both a digital marketing platform and an e-commerce platform. Its biggest strengths are navigation, product information and trust-building. The main improvement area would be simplifying some pages so that decision-making feels faster and easier, especially on mobile devices.</p>
+      </div>
+    </section>
+
+    <section class="section" id="trend">
+      <div class="section-head">
+        <div class="sec-num">05</div>
+        <div>
+          <div class="sec-kicker">Data-led future</div>
+          <h2>Trend Analysis</h2>
+          <p class="section-sub">The visual language returns to Garmin teal here, because the trend is centred on personalised data, retention and the brand’s long-term ecosystem value.</p>
+        </div>
+        <div class="signal"><strong>Trend relevance</strong><div class="line"><span style="width:88%"></span></div></div>
+      </div>
+      <div class="copy">
+        <p>A digital trend that is especially relevant to Garmin is the growth of personalised wearable data combined with user-generated content. Today, people expect more than simple step counting. They want useful insights about sleep, recovery, readiness and performance, presented in a way that feels relevant to their own lives.</p>
+        <p>This trend matters because digital marketing is moving away from only selling product features. Instead, brands are creating value through more personalised digital experiences. In Garmin’s case, features such as Body Battery, sleep score and suggested workouts help the product feel more useful and more personal.</p>
+      </div>
+      <div class="mini-grid">
+        <figure class="capture span8"><div class="frame"><img src="src/wearable-growth.png" alt="Global Growth of Wearable Technology"></div><div class="cap"><strong>Figure 15: Global Growth of Wearable Technology</strong>Source: chart included in the source material.</div></figure>
+        <figure class="capture span4"><div class="frame"><img src="src/garmin-health-metrics.png" alt="Personalised Health and Activity Metrics in Garmin Connect"></div><div class="cap"><strong>Figure 16: Personalised Health and Activity Metrics in Garmin Connect</strong>Source: screenshot from Garmin Connect / source material.</div></figure>
+      </div>
+      <div class="copy">
+        <p>For Garmin, this trend is important because personalised data gives users a reason to return to the app regularly. Instead of using the device only when exercising, users continue engaging with Garmin throughout the day. This strengthens retention because the user becomes connected not only to the watch, but also to the data and insights behind it.</p>
+        <p>From a marketing point of view, this trend also encourages user-generated content. When users complete a run, improve a metric or reach a training goal, they often want to share it. This means personal data can become social content. For Garmin, this is valuable because these posts act like indirect promotion and show other people what the product can do in a more natural and believable way.</p>
+      </div>
+      <div class="mini-grid">
+        <figure class="capture span6"><div class="frame"><img src="src/strava-app-screens.png" alt="User-generated Fitness Content"></div><div class="cap"><strong>Figure 17: User-generated Fitness Content</strong>Source: screenshot from source material.</div></figure>
+        <figure class="capture span6"><div class="frame"><img src="src/garmin-connect-apps.png" alt="Connected app ecosystem"></div><div class="cap"><strong>Additional trend visual</strong>Connected app views reinforce the link between data, engagement and retention.</div></figure>
+      </div>
+      <div class="quote">However, this trend also has some limits. The more Garmin depends on personal data, the more important privacy and trust become. Users need to feel that their information is secure and handled responsibly. In addition, if recommendations or metrics become too repetitive, users may stop finding them useful. Overall, personalized wearable data is a strong trend for Garmin because it supports engagement, retention and visibility, but the brand still needs to balance this with trust and user control.</div>
+    </section>
+
+    <section class="section" id="conclusion">
+      <div class="section-head">
+        <div class="sec-num">06</div>
+        <div>
+          <div class="sec-kicker">Final checkpoint</div>
+          <h2>Conclusion</h2>
+          <p class="section-sub">The final section closes the route and pulls the main findings together.</p>
+        </div>
+        <div class="signal"><strong>Overall fit</strong><div class="line"><span style="width:92%"></span></div></div>
+      </div>
+      <div class="copy">
+        <p>This e-portfolio has shown that Garmin performs strongly across different areas of digital marketing. Through the Ladder of Engagement, the brand encourages users to move from simple product interaction to deeper participation through reviews, apps and customisation. In relation to social media, Strava is an effective platform because it supports community, motivation and content sharing in a way that fits Garmin’s target users. Garmin’s website also performs well, especially in navigation, product information and trust-building. Finally, the trend analysis shows that personalised wearable data and user-generated content are highly relevant to Garmin’s future digital marketing. Overall, Garmin has built a strong digital presence, but it still needs to keep improving user experience and maintaining trust in order to stay competitive.</p>
+      </div>
+    </section>
+
+    <section class="section" id="references">
+      <div class="section-head">
+        <div class="sec-num" style="font-size:1.2rem">REF</div>
+        <div>
+          <div class="sec-kicker">Academic support</div>
+          <h2>Reference List</h2>
+          <p class="section-sub">Core references retained from the assignment version.</p>
+        </div>
+        <div class="signal"><strong>Reference set</strong><div class="line"><span style="width:60%"></span></div></div>
+      </div>
+      <div class="refs">
+        <p>Chaffey, D. and Ellis-Chadwick, F. (2019) <em>Digital marketing</em>. 7th edn. Harlow: Pearson.</p>
+        <p>Smith, P.R. and Zook, Z. (2016) <em>Marketing communications: offline and online integration, engagement and analytics</em>. 6th edn. London: Kogan Page.</p>
+        <p>Tuten, T.L. and Solomon, M.R. (2017) <em>Social media marketing</em>. 2nd edn. London: Sage.</p>
+      </div>
+    </section>
+
+    <div class="footer">Garmin Forerunner E-Portfolio · recoloured and redesigned with stronger Garmin / Strava identity.</div>
+  </div>
+  <script>
+    const sections=[...document.querySelectorAll('.section')];
+    const links=[...document.querySelectorAll('.links a')];
+    const io=new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          links.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+entry.target.id));
+        }
+      });
+    },{threshold:.35});
+    sections.forEach(s=>io.observe(s));
+  </script>
+</body>
+</html>
